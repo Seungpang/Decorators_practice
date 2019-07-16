@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'board',
     'fcuser',
-    'tag'
+    'tag',
+    'myadmin',
 ]
 
 MIDDLEWARE = [

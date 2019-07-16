@@ -6,7 +6,7 @@ from tag.models import Tag
 from .models import Board
 from .forms import BoardForm
 from django.views.decorators.csrf import csrf_exempt
-
+from fcuser.decorators import login_required, admin_requried
 # Create your views here.
 
 def api_board_detail(request, pk):
@@ -33,7 +33,7 @@ def api_board_write(request):
         }, status=401)
 
     if request.method == 'POST':
-        if 'title' not in request.POST or not request.POST['title']:
+        if 'title' not in request.POST or not request.POST['title']:  #POST는 딕셔너리
             return JsonResponse({
                 'error': '제목을 입력해야 합니다'
             }, status=400)
@@ -97,6 +97,7 @@ def board_write(request):
     return render(request, 'board_write.html', {'form': form})
 
 
+@admin_requried
 def board_list(request):
     all_boards = Board.objects.all().order_by('-id')
     page = int(request.GET.get('p', 1))

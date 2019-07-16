@@ -8,8 +8,12 @@ class Fcuser(models.Model):
                                 verbose_name='사용자명')
     useremail = models.EmailField(max_length=128,
                                   verbose_name='사용자이메일')
-    password = models.CharField(max_length=64,
+    password = models.CharField(max_length=128,
                                 verbose_name='비밀번호')
+    level = models.IntegerField(choices=(
+                                (1, 'user'),
+                                (2, 'admin'),
+                                (3, 'superuser')),verbose_name='회원등급')
     registered_dttm = models.DateTimeField(auto_now_add=True,
                                            verbose_name='등록시간')
 

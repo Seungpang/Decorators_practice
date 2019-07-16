@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('fcuser/', include('fcuser.urls')),
     path('board/', include('board.urls')),
+    path('myadmin/', include('myadmin.urls')),
     path('', home),
 ]

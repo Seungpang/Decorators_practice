@@ -28,13 +28,14 @@
       url: "/board/api/board/",
       type: "POST",
       data: {
-        title: $("#id_title").val(),
+        title: $("#id_title").val(),   //val안에 값을 넣으면 그 값이 설정된다
         contents: $("#id_contents").val()
       },
       success: function (result) {
         location.href="/board/list/";
       },
       error: function (result) {
+        //console.log(result);
         // console.log(result.responseJSON.error);
         $("#create_error").text(result.responseJSON.error);
       },
