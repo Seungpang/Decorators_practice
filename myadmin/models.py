@@ -16,7 +16,7 @@ class BoardPermission(models.Model):
 
 
     def __str__(self):
-        return self.permission_type
+        return self.permission
 
     class Meta:
         db_table = 'fastcampus_board_permission'

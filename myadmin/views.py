@@ -12,22 +12,22 @@ def permission_list(request):
         update = request.POST.get('update')
         delete = request.POST.get('delete')
 
-        c_perm = BoardPermission.objects.update_or_create(
+        c_perm, created = BoardPermission.objects.update_or_create(
             board_id=1,
             permission_type=1,
             defaults={'permission_level':int(create)}
         )        
-        r_perm = BoardPermission.objects.update_or_create(
+        r_perm, created = BoardPermission.objects.update_or_create(
             board_id=1,
             permission_type=2,
             defaults={'permission_level':int(read)}
         )
-        u_perm = BoardPermission.objects.update_or_create(
+        u_perm, created = BoardPermission.objects.update_or_create(
             board_id=1,
             permission_type=3,
             defaults={'permission_level':int(update)}
         )
-        d_perm = BoardPermission.objects.update_or_create(
+        d_perm, created = BoardPermission.objects.update_or_create(
             board_id=1,
             permission_type=4,
             defaults={'permission_level':int(delete)}

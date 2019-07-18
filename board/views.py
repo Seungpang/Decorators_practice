@@ -97,7 +97,7 @@ def board_write(request):
     return render(request, 'board_write.html', {'form': form})
 
 
-@admin_requried
+
 def board_list(request):
     all_boards = Board.objects.all().order_by('-id')
     page = int(request.GET.get('p', 1))
@@ -105,3 +105,4 @@ def board_list(request):
 
     boards = paginator.get_page(page)
     return render(request, 'board_list.html', {'boards': boards})
+

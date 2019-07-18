@@ -1,44 +1,52 @@
-{% extends 'base.html'%}
-
+{% extends "base.html" %}
 {% block contents %}
 <h3 class="mb-5 mt-5">권한 관리 페이지</h3>
 <form method="post" action="/myadmin/permissions/">
-  {% csrf_token %}
-  <div class="row">
-    <label for="exampleFormControlInput1">생성 권한</label>
-    <select class="form-control" id="create">
-      <option value='1' {% ifequal c_perm 1 %}selected{% endifequal %}>User</option>
-      <option value='2' {% ifequal c_perm 2 %}selected{% endifequal %}>Admin</option>
-      <option value='3' {% ifequal c_perm 3 %}selected{% endifequal %}>Superuser</option>
-    </select>
-  </div>
+    {% csrf_token %}
     <div class="row">
-    <label for="exampleFormControlInput1">읽기 권한</label>
-    <select class="form-control" id="read">
-      <option value='1' {% ifequal r_perm 2 %}selected{% endifequal %}>User</option>
-      <option value='2' {% ifequal r_perm 2 %}selected{% endifequal %}>Admin</option>
-      <option value='3' {% ifequal r_perm 2 %}selected{% endifequal %}>Superuser</option>
-    </select>
-  </div>
+        <div class="col">
+            <select class="custom-select mb-3" name="create">
+                <option selected>생성 권한</option>
+                <option value="1" {% ifequal c_perm 1 %}selected{% endifequal %}>User</option>
+                <option value="2" {% ifequal c_perm 2 %}selected{% endifequal %}>Admin</option>
+                <option value="3" {% ifequal c_perm 3 %}selected{% endifequal %}>Superuser</option>
+            </select>
+        </div>
+    </div>
     <div class="row">
-    <label for="exampleFormControlInput1">수정 권한</label>
-    <select class="form-control" id="update">
-      <option value='1' {% ifequal u_perm 3 %}selected{% endifequal %}>User</option>
-      <option value='2' {% ifequal u_perm 3 %}selected{% endifequal %}>Admin</option>
-      <option value='3' {% ifequal u_perm 3 %}selected{% endifequal %}>Superuser</option>
-    </select>
-  </div>
+        <div class="col">
+            <select class="custom-select mb-3" name="read">
+                <option selected>읽기 권한</option>
+                <option value="1" {% ifequal r_perm 1 %}selected{% endifequal %}>User</option>
+                <option value="2" {% ifequal r_perm 2 %}selected{% endifequal %}>Admin</option>
+                <option value="3" {% ifequal r_perm 3 %}selected{% endifequal %}>Superuser</option>
+            </select>
+        </div>
+    </div>
     <div class="row">
-    <label for="exampleFormControlInput1">삭제 권한</label>
-    <select class="form-control" id="delete">
-      <option value='1' {% ifequal r_perm 4 %}selected{% endifequal %}>User</option>
-      <option value='2' {% ifequal r_perm 4 %}selected{% endifequal %}>Admin</option>
-      <option value='3' {% ifequal r_perm 4 %}selected{% endifequal %}>Superuser</option>
-    </select>
-  </div>
-  <div class="row">
-    <button type="submit" class="btn btn-primary">완료</button>
-  </div>
+        <div class="col">
+            <select class="custom-select mb-3" name="update">
+                <option selected>수정 권한</option>
+                <option value="1" {% ifequal u_perm 1 %}selected{% endifequal %}>User</option>
+                <option value="2" {% ifequal u_perm 2 %}selected{% endifequal %}>Admin</option>
+                <option value="3" {% ifequal u_perm 3 %}selected{% endifequal %}>Superuser</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <select class="custom-select mb-3" name="delete">
+                <option selected>삭제 권한</option>
+                <option value="1" {% ifequal d_perm 1 %}selected{% endifequal %}>User</option>
+                <option value="2" {% ifequal d_perm 2 %}selected{% endifequal %}>Admin</option>
+                <option value="3" {% ifequal d_perm 3 %}selected{% endifequal %}>Superuser</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button type="submit" class="btn btn-primary">변경하기</button>    
+        </div>
+    </div>
 </form>
-
 {% endblock %}
