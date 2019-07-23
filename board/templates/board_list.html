@@ -2,15 +2,17 @@
 
 {% block scripts %}
 <script>
-  function api_like(board_id){
+  function api_like(event){
     $.ajax({
       url: "/like/like/",
       type: "POST",
       data: {
-        board_id: board_id
+        board_id: event.data.board_id
       },
       success: function (result) {
-        $("#detail_like").text("Like "+ result.like_cnt);
+        $("#detail_like").text("Unike "+ result.like_cnt);
+        $("#detail_like").unbind('click');
+        $("#detail_like").click({board_id: event.data.board_id}, api_unlike);
       },
       error: function (result) {
         console.log(result.responseJSON.error);
@@ -20,6 +22,27 @@
       }
     });     
   }
+
+  function api_unlike(event){
+    $.ajax({
+      url: "/like/unlike/",
+      type: "POST",
+      data: {
+        board_id: event.data.board_id
+      },
+      success: function (result) {
+        $("#detail_like").text("Like "+ result.like_cnt);
+        $("#detail_like").unbind('click');
+        $("#detail_like").click({board_id: event.data.board_id}, api_like);        
+      },
+      error: function (result) {
+        console.log(result.responseJSON.error);
+      },
+      complete: function (result) {
+        console.log('complete');
+      }
+    });     
+  }  
   function get_and_modal_detail(board_id){
     $.ajax({
       url: "/board/api/detail/" + board_id,
@@ -30,7 +53,16 @@
         $("#detail_writer").text(result.writer);
         $("#detail_registered_dttm").text(result.registered_dttm);
         // $("#detail_title").html('');
-        $("#detail_like").text("Like " + result.like_cnt);
+        if (result.is_liked){
+          $("#detail_like").text("Unlike " + result.like_cnt);
+          $("#detail_like").unbind('click');
+          $("#detail_like").click({board_id: result.id}, api_unlike);
+        } else{
+          $("#detail_like").text("Like " + result.like_cnt);
+          $("#detail_like").unbind('click');
+          $("#detail_like").click({board_id: result.id}, api_like);
+        }
+        
         $("#detailModal").modal('show');
         console.log(result);
       },

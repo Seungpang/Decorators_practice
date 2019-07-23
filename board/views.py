@@ -2,11 +2,13 @@ from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.http import Http404, HttpResponse, JsonResponse
 from fcuser.models import Fcuser
+from like.models import Like
 from tag.models import Tag
 from .models import Board
 from .forms import BoardForm
 from django.views.decorators.csrf import csrf_exempt
 from fcuser.decorators import login_required, admin_requried
+# from django.db.models import Count
 # Create your views here.
 
 def api_board_detail(request, pk):
@@ -15,13 +17,23 @@ def api_board_detail(request, pk):
     except Board.DoesNotExist:
         return JsonResponse({}, status=404)
 
+    #만약 로그인 했다면
+    is_liked = False
+    if request.session.get('user'):
+        user = Fcuser.objects.get(pk=request.session.get('user'))
+        if Like.objects.filter(board=board, writer=user).count():
+            is_liked=True
+ 
+
     if request.method == 'GET':
         return JsonResponse({
+            'id': board.id,
             'title': board.title,
             'contents': board.contents,
             'writer': board.writer.username,
             'like_cnt': board.like_cnt,
-            'registered_dttm': board.registered_dttm
+            'registered_dttm': board.registered_dttm,
+            'is_liked': is_liked,
         })
     else:
         return JsonResponse({}, status=400)
