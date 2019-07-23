@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'fcuser',
     'tag',
     'myadmin',
+    'like',
 ]
 
 MIDDLEWARE = [

@@ -22,5 +22,6 @@ urlpatterns = [
     path('fcuser/', include('fcuser.urls')),
     path('board/', include('board.urls')),
     path('myadmin/', include('myadmin.urls')),
+    path('like/', include('like.urls')),
     path('', home),
 ]

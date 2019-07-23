@@ -2,6 +2,24 @@
 
 {% block scripts %}
 <script>
+  function api_like(board_id){
+    $.ajax({
+      url: "/like/like/",
+      type: "POST",
+      data: {
+        board_id: board_id
+      },
+      success: function (result) {
+        $("#detail_like").text("Like "+ result.like_cnt);
+      },
+      error: function (result) {
+        console.log(result.responseJSON.error);
+      },
+      complete: function (result) {
+        console.log('complete');
+      }
+    });     
+  }
   function get_and_modal_detail(board_id){
     $.ajax({
       url: "/board/api/detail/" + board_id,
@@ -12,6 +30,7 @@
         $("#detail_writer").text(result.writer);
         $("#detail_registered_dttm").text(result.registered_dttm);
         // $("#detail_title").html('');
+        $("#detail_like").text("Like " + result.like_cnt);
         $("#detailModal").modal('show');
         console.log(result);
       },
@@ -136,6 +155,7 @@
           </div>
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="detail_like"></button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>

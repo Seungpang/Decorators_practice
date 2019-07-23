@@ -20,6 +20,7 @@ def api_board_detail(request, pk):
             'title': board.title,
             'contents': board.contents,
             'writer': board.writer.username,
+            'like_cnt': board.like_cnt,
             'registered_dttm': board.registered_dttm
         })
     else:
