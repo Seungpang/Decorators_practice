@@ -112,6 +112,17 @@
         </tr>
       </thead>
       <tbody class="text-dark">
+        {% for top in top3 %}
+        <tr onclick="get_and_modal_detail({{ top.id }});">
+          <th>{{ top.id }}</th>
+          <td>{{ top.title }}</td>
+          <td>{{ top.writer }}</td>
+          <td>{{ top.registered_dttm }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <td colspan="4"><hr></td>
+        </tr>
         {% for board in boards %}
         <tr onclick="get_and_modal_detail({{ board.id }});">
           <th>{{ board.id }}</th>

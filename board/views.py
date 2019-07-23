@@ -6,6 +6,7 @@ from like.models import Like
 from tag.models import Tag
 from .models import Board
 from .forms import BoardForm
+from django.db.models import Max
 from django.views.decorators.csrf import csrf_exempt
 from fcuser.decorators import login_required, admin_requried
 # from django.db.models import Count
@@ -115,7 +116,9 @@ def board_list(request):
     all_boards = Board.objects.all().order_by('-id')
     page = int(request.GET.get('p', 1))
     paginator = Paginator(all_boards, 3)
-
     boards = paginator.get_page(page)
-    return render(request, 'board_list.html', {'boards': boards})
+
+    max_like = Board.objects.all().aggregate(Max('like_cnt'))['like_cnt__max']
+    top3 = Board.objects.filter(like_cnt__gte=max_like).order_by('-like_cnt')[:3]
+    return render(request, 'board_list.html', {'boards': boards, 'top': top3})
 
