@@ -28,7 +28,10 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 GOOGLE_CLIENT_ID = '192717409446-m702idi8joi4pnqp9m85nt93ghomvjsr.apps.googleusercontent.com'
-
+TELEGRAM_BOT_ID = '950250647:AAFjgC_fLz8Rlmo1qnDk6AaTZbgBLAJEBjE'
+TELEGRAM_MY_ID = '501041461'
+NAVER_ID = 'obey1342'
+NAVER_PASSWORD = 'tmdfo5512'
 # Application definition
 
 INSTALLED_APPS = [

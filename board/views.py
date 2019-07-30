@@ -9,6 +9,7 @@ from .forms import BoardForm
 from django.db.models import Max
 from django.views.decorators.csrf import csrf_exempt
 from fcuser.decorators import login_required, admin_requried
+from libs.exporter import send_telegram
 # from django.db.models import Count
 # Create your views here.
 
@@ -65,6 +66,9 @@ def api_board_write(request):
         board.contents = request.POST.get('contents')
         board.writer = fcuser
         board.save()
+
+        telegram_msg = '%s님이 %s라는 글을 남기셨어요!' % (fcuser.username, board.title)
+        send_telegram(telegram_msg)
 
         return JsonResponse({}, status=201)
     

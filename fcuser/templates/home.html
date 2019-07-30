@@ -1,8 +1,22 @@
 {% extends "base.html" %}
 
-
-
-
+{% block scripts %}
+<script>
+  gapi.load('auth2', function(){
+    gapi.auth2.init({
+      clienId:"192717409446-m702idi8joi4pnqp9m85nt93ghomvjsr.apps.googleusercontent.com",
+      scope: 'profile email'
+    });
+  });
+  function signOut(){
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function(){
+      location.href="/fcuser/logout/";
+    });
+    auth2.disconnect();  //구글까지 로그아웃
+  }
+</script>
+{% endblock %}
 {% block contents %}
 
 <div class="row mt-5">
@@ -13,7 +27,7 @@
 <div class="row mt-5">
   {% if request.session.user %}
   <div class="col-12">
-    <button class="btn btn-primary btn-block" onclick="location.href='/fcuser/logout/'">로그아웃</button>
+    <button class="btn btn-primary btn-block"  onclick="signOut();">로그아웃</button>
   </div>
   {% else %}
   <div class="col-6">
