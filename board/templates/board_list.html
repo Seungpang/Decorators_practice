@@ -2,7 +2,35 @@
 
 {% block scripts %}
 <script>
-  function api_like(event){
+  // 좋아요 명단을 가져오고 popover까지 생성하는 함수
+  function api_like_list(event) {
+    $.ajax({
+      url: "/like/like/list/?board_id=" + event.data.board_id,
+      type: "GET",
+      success: function (result) {
+        // 좋아요 명단이 있을 때만 동작하게 한다
+        if (result.length) {
+          var content = '';
+          // 추가해야할 내용을 만든다
+          // 반복문을 돌면서 작성자를 만든다
+          for (var i = 0; i < result.length; i++) {
+            content = content + result[i].writer + '\n';
+          }
+          // data-content에 있는 항목이 출력됨
+          $("#detail_like").attr("data-content", content);
+          $('#detail_like').popover('show');
+        }
+      },
+      error: function (result) {
+        console.log(result.responseJSON.error);
+      },
+      complete: function (result) {
+        console.log('complete');
+      }
+    });
+  }
+
+  function api_like(event) {
     $.ajax({
       url: "/like/like/",
       type: "POST",
@@ -10,20 +38,23 @@
         board_id: event.data.board_id
       },
       success: function (result) {
-        $("#detail_like").text("Unike "+ result.like_cnt);
+        $("#detail_like").text("Unlike " + result.like_cnt);
         $("#detail_like").unbind('click');
-        $("#detail_like").click({board_id: event.data.board_id}, api_unlike);
+        $("#detail_like").click({
+          board_id: event.data.board_id
+        }, api_unlike);
       },
       error: function (result) {
         console.log(result.responseJSON.error);
+        // $("#create_error").text(result.responseJSON.error);
       },
       complete: function (result) {
         console.log('complete');
       }
-    });     
+    });
   }
 
-  function api_unlike(event){
+  function api_unlike(event) {
     $.ajax({
       url: "/like/unlike/",
       type: "POST",
@@ -31,39 +62,53 @@
         board_id: event.data.board_id
       },
       success: function (result) {
-        $("#detail_like").text("Like "+ result.like_cnt);
+        $("#detail_like").text("Like " + result.like_cnt);
         $("#detail_like").unbind('click');
-        $("#detail_like").click({board_id: event.data.board_id}, api_like);        
+        $("#detail_like").click({
+          board_id: event.data.board_id
+        }, api_like);
       },
       error: function (result) {
         console.log(result.responseJSON.error);
+        // $("#create_error").text(result.responseJSON.error);
       },
       complete: function (result) {
         console.log('complete');
       }
-    });     
-  }  
-  function get_and_modal_detail(board_id){
+    });
+  }
+
+  function get_and_modal_detail(board_id) {
     $.ajax({
       url: "/board/api/detail/" + board_id,
-      type: "GET", 
+      type: "GET",
       success: function (result) {
         $("#detail_title").text(result.title);
         $("#detail_contents").text(result.contents);
         $("#detail_writer").text(result.writer);
         $("#detail_registered_dttm").text(result.registered_dttm);
-        // $("#detail_title").html('');
-        if (result.is_liked){
+
+
+        if (result.is_liked) {
           $("#detail_like").text("Unlike " + result.like_cnt);
           $("#detail_like").unbind('click');
-          $("#detail_like").click({board_id: result.id}, api_unlike);
-        } else{
+          $("#detail_like").click({
+            board_id: result.id
+          }, api_unlike);
+        } else {
           $("#detail_like").text("Like " + result.like_cnt);
           $("#detail_like").unbind('click');
-          $("#detail_like").click({board_id: result.id}, api_like);
+          $("#detail_like").click({
+            board_id: result.id
+          }, api_like);
         }
-        
         $("#detailModal").modal('show');
+
+        $("#detail_like").unbind('mouseenter');
+        $("#detail_like").mouseenter({
+          board_id: result.id
+        }, api_like_list);
+
         console.log(result);
       },
       error: function (result) {
@@ -74,19 +119,19 @@
       }
     });
   }
-  function create_board(){
+
+  function create_board() {
     $.ajax({
       url: "/board/api/board/",
       type: "POST",
       data: {
-        title: $("#id_title").val(),   //val안에 값을 넣으면 그 값이 설정된다
-        contents: $("#id_contents").val()
+        title: $("#id_title").val(),
+        contents: $("#id_contents").val(),
       },
       success: function (result) {
-        location.href="/board/list/";
+        location.href = "/board/list/";
       },
       error: function (result) {
-        //console.log(result);
         // console.log(result.responseJSON.error);
         $("#create_error").text(result.responseJSON.error);
       },
@@ -96,6 +141,11 @@
     });
   }
   $(document).ready(function () {
+    // mouseleave는 마우스가 떠날때
+    // popover를 없앰
+    $("#detail_like").mouseleave(function () {
+      $("#detail_like").popover('hide');
+    });
   });
 </script>
 {% endblock %}
@@ -112,16 +162,18 @@
         </tr>
       </thead>
       <tbody class="text-dark">
-        {% for top in top3 %}
-        <tr onclick="get_and_modal_detail({{ top.id }});">
-          <th>{{ top.id }}</th>
-          <td>{{ top.title }}</td>
-          <td>{{ top.writer }}</td>
-          <td>{{ top.registered_dttm }}</td>
+        {% for top3 in top3 %}
+        <tr onclick="get_and_modal_detail({{ top3.id }});">
+          <th>{{ top3.id }}</th>
+          <td>{{ top3.title }}</td>
+          <td>{{ top3.writer }}</td>
+          <td>{{ top3.registered_dttm }}</td>
         </tr>
         {% endfor %}
         <tr>
-          <td colspan="4"><hr></td>
+          <td colspan="4">
+            <hr>
+          </td>
         </tr>
         {% for board in boards %}
         <tr onclick="get_and_modal_detail({{ board.id }});">
@@ -170,7 +222,8 @@
   </div>
 </div>
 <!-- Modal -->
-<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -192,47 +245,49 @@
           </div>
         </div>
         <div class="row">
-            <div class="col">
-              <span id="detail_registered_dttm"></span>
-            </div>
+          <div class="col">
+            <span id="detail_registered_dttm"></span>
           </div>
+        </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="detail_like"></button>
+        <button type="button" class="btn btn-primary" id="detail_like" data-toggle="popover" data-placement="top"
+          data-content=""></button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 <!-- Modal -->
-<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="create_title">글쓰기</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="row mt-5">
-              <div class="col-12">
-                <form method="POST" action=".">
-                  <div class="form-group">
-                    <label for="id_title">제목</label>
-                    <input type="text" class="form-control" id="id_title" name="title" />
-                    <textarea class="form-control" name="contents" id="id_contents" placeholder="내용"></textarea>
-                  </div>
-                  <span style="color: red" id="create_error"></span>
-                </form>
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="create_title">글쓰기</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row mt-5">
+          <div class="col-12">
+            <form method="POST" action=".">
+              <div class="form-group">
+                <label for="id_title">제목</label>
+                <input type="text" class="form-control" id="id_title" name="title" />
+                <textarea class="form-control" name="contents" id="id_contents" placeholder="내용"></textarea>
               </div>
-            </div>
+              <span style="color: red" id="create_error"></span>
+            </form>
+          </div>
         </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary" onclick="create_board();">글쓰기</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" onclick="create_board();">글쓰기</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
+</div>
 {% endblock %}

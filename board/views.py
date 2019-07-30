@@ -40,6 +40,7 @@ def api_board_detail(request, pk):
         return JsonResponse({}, status=400)
 
 @csrf_exempt
+@login_required
 def api_board_write(request):
     if not request.session.get('user'):
         return JsonResponse({
@@ -111,7 +112,7 @@ def board_write(request):
     return render(request, 'board_write.html', {'form': form})
 
 
-
+@login_required
 def board_list(request):
     all_boards = Board.objects.all().order_by('-id')
     page = int(request.GET.get('p', 1))
@@ -120,5 +121,5 @@ def board_list(request):
 
     max_like = Board.objects.all().aggregate(Max('like_cnt'))['like_cnt__max']
     top3 = Board.objects.filter(like_cnt__gte=max_like).order_by('-like_cnt')[:3]
-    return render(request, 'board_list.html', {'boards': boards, 'top': top3})
+    return render(request, 'board_list.html', {'boards': boards, 'top3': top3})
 

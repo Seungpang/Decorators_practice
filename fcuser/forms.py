@@ -27,6 +27,10 @@ class LoginForm(forms.Form):
                 self.add_error('username', '아이디가 없습니다')
                 return
 
+            if not fcuser.is_authenticated:
+                self.add_error('username', '인증되지 않은 회원입니다.')
+                return
+
             if not check_password(password, fcuser.password):
                 self.add_error('password', '비밀번호를 틀렸습니다')
             else:

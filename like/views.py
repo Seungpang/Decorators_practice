@@ -8,6 +8,22 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F
 
+
+
+def api_like_list(request):
+    board_id = request.GET.get('board_id')
+
+    borad = Board.objects.get(pk=board_id)
+    likes = Like.objects.filter(board=board_id)
+
+    ret = []
+    for like in likes:
+        ret.append({
+            'writer': like.writer.username
+        })
+
+    return JsonResponse(ret, safe=False)
+
 @csrf_exempt
 @login_required
 def api_like(request):
@@ -27,6 +43,8 @@ def api_like(request):
             board.like_cnt = board.like_cnt + 1
             board.save()
             # Board.objects.filter(pk=board_id).update(like_cnt=F('like_cnt')+1) # 효율이 더 좋음
+            #commit은 반영이 끝난상태
+            # 전체 갱신할때 효율 높이는 용도로 쓰면된다. 지금쓰면 안됨 그 이유는 board.like_cnt를 가져오기 때문이다.
             
 
         return JsonResponse({'like_cnt': board.like_cnt})

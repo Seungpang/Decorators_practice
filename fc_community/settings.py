@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+GOOGLE_CLIENT_ID = '192717409446-m702idi8joi4pnqp9m85nt93ghomvjsr.apps.googleusercontent.com'
 
 # Application definition
 

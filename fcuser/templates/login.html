@@ -1,11 +1,40 @@
 {% extends "base.html" %}
 
+{% block scripts %}
+<meta name="google-signin-scope" content="profile email">
+<meta name="google-signin-client_id" content="192717409446-m702idi8joi4pnqp9m85nt93ghomvjsr.apps.googleusercontent.com">
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+
+<script>
+  function onSignIn(g) {
+    //var profile = g.getBasicProfile();
+    //console.log(profile.getName());
+    //console.log(profile.getEmail());
+
+    var token = g.getAuthResponse().id_token;
+    location.href="/fcuser/login/?token="+ token;
+    //console.log(token);
+  }
+</script>
+{% endblock %}
 {% block contents %}
 <div class="row mt-5">
   <div class="col-12 text-center">
     <h1>로그인</h1>
   </div>
 </div>
+<div class="row mt-1">
+  <div class="col-12 text-center">
+    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark">asdasddd</div>
+  </div>
+</div>
+{% if error %}
+<div class="row mt-5">
+  <div class="col-12">
+    {{ error }}
+  </div>
+</div>
+{% endif %}
 <div class="row mt-5">
   <div class="col-12">
     {{ error }}
